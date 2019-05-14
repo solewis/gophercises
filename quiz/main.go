@@ -27,13 +27,7 @@ func main() {
 eventLoop:
 	for i, problem := range problems {
 		fmt.Printf("Problem #%d: %s = ", i + 1, problem.question)
-
-		answerCh := make(chan string)
-		go func() {
-			var input string
-			_, _ = fmt.Scanln(&input)
-			answerCh <- input
-		}()
+		answerCh := answerGenerator()
 
 		select {
 		case <-timer.C:
@@ -48,6 +42,16 @@ eventLoop:
 	}
 
 	fmt.Printf("You scored %d out of %d\n", correct, len(problems))
+}
+
+func answerGenerator() <-chan string {
+	answerCh := make(chan string)
+	go func() {
+		var input string
+		_, _ = fmt.Scanln(&input)
+		answerCh <- input
+	}()
+	return answerCh
 }
 
 func parseProblems(csvName string, shuffle bool) []problem {
