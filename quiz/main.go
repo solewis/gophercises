@@ -1,9 +1,9 @@
 package main
 
 import (
+	"encoding/csv"
 	"flag"
 	"fmt"
-	"encoding/csv"
 	"math/rand"
 	"os"
 	"time"
@@ -17,20 +17,16 @@ func main() {
 	flag.Parse()
 
 	problems := parseProblems(*csvPtr, *shufflePtr)
+	timeout := time.After(time.Duration(*limitPtr) * time.Second)
 
-
-
-	timer := time.NewTimer(time.Duration(*limitPtr) * time.Second)
-
-	var correct int
-
+	correct := 0
 eventLoop:
 	for i, problem := range problems {
-		fmt.Printf("Problem #%d: %s = ", i + 1, problem.question)
+		fmt.Printf("Problem #%d: %s = ", i+1, problem.question)
 		answerCh := answerGenerator()
 
 		select {
-		case <-timer.C:
+		case <-timeout:
 			fmt.Println()
 			fmt.Println("Times up!")
 			break eventLoop
@@ -59,9 +55,9 @@ func parseProblems(csvName string, shuffle bool) []problem {
 	lines, _ := csv.NewReader(csvFile).ReadAll()
 	problems := make([]problem, len(lines))
 	for i, line := range lines {
-		problems[i] = problem {
-			question:line[0],
-			answer:line[1],
+		problems[i] = problem{
+			question: line[0],
+			answer:   line[1],
 		}
 	}
 	if shuffle {
@@ -77,5 +73,5 @@ func parseProblems(csvName string, shuffle bool) []problem {
 
 type problem struct {
 	question string
-	answer string
+	answer   string
 }
