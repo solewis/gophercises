@@ -4,6 +4,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"log"
 	"net/http"
+	"encoding/json"
 )
 
 // MapHandler will return an http.HandlerFunc (which also
@@ -39,14 +40,6 @@ func MapHandler(pathsToUrls map[string]string, fallback http.Handler) http.Handl
 // See MapHandler to create a similar http.HandlerFunc via
 // a mapping of paths to urls.
 func YAMLHandler(yml []byte, fallback http.Handler) (http.HandlerFunc, error) {
-	parsedYaml, err := parseYAML(yml)
-	if err != nil {
-		return nil, err
-	}
-	return MapHandler(parsedYaml, fallback), nil
-}
-
-func parseYAML(yml []byte) (map[string]string, error) {
 	t := redirect{}
 
 	err := yaml.Unmarshal(yml, &t)
@@ -55,14 +48,29 @@ func parseYAML(yml []byte) (map[string]string, error) {
 		return nil, err
 	}
 
-	m := make(map[string]string)
-	for _, redirect := range t {
-		m[redirect.Path] = redirect.Url
-	}
-	return m, nil
+	return MapHandler(redirectToMap(t), fallback), nil
+}
+
+func JSONHandler(j []byte, fallback http.Handler) (http.HandlerFunc, error) {
+	t := redirect{}
+
+	if err := json.Unmarshal(j, &t); err != nil {
+        log.Fatalf("error: %v", err)
+		return nil, err
+    }
+
+    return MapHandler(redirectToMap(t), fallback), nil
 }
 
 type redirect []struct {
 	Path string
 	Url string
+}
+
+func redirectToMap(redirects redirect) map[string]string {
+	m := make(map[string]string)
+	for _, redirect := range redirects {
+		m[redirect.Path] = redirect.Url
+	}
+	return m
 }

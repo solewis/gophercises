@@ -17,18 +17,24 @@ func main() {
 
 	// Build the YAMLHandler using the mapHandler as the
 	// fallback
-	yaml := `
-- path: /urlshort
-  url: https://github.com/gophercises/urlshort
-- path: /urlshort-final
-  url: https://github.com/gophercises/urlshort/tree/solution
-`
-	yamlHandler, err := YAMLHandler([]byte(yaml), mapHandler)
+// 	yaml := `
+// - path: /urlshort
+//   url: https://github.com/gophercises/urlshort
+// - path: /urlshort-final
+//   url: https://github.com/gophercises/urlshort/tree/solution
+// `
+// 	yamlHandler, err := YAMLHandler([]byte(yaml), mapHandler)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+	json := `[{"path": "/json", "url": "https://gobyexample.com/json"}]`
+	jsonHandler, err := JSONHandler([]byte(json), mapHandler)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("Starting the server on :8080")
-	http.ListenAndServe(":8080", yamlHandler)
+	http.ListenAndServe(":8080", jsonHandler)
 }
 
 func defaultMux() *http.ServeMux {
