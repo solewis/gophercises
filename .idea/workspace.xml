@@ -10,13 +10,17 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="testRunner" value="GRADLE" />
+    <option name="delegatedBuild" value="true" />
+  </component>
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/quiz/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-67">
-              <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
+            <state relative-caret-position="267">
+              <caret line="46" column="33" lean-forward="true" selection-start-line="45" selection-start-column="8" selection-end-line="46" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -24,8 +28,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/urlshortener/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="27" column="18" selection-start-line="27" selection-start-column="18" selection-end-line="27" selection-end-column="18" />
+            <state relative-caret-position="290">
+              <caret line="33" column="18" selection-start-line="33" selection-start-column="18" selection-end-line="33" selection-end-column="18" />
               <folding>
                 <element signature="e#14#79#0" expanded="true" />
               </folding>
@@ -33,13 +37,34 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/chooseadventure/gopher.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1887">
+              <caret line="111" column="1" selection-start-line="111" selection-start-column="1" selection-end-line="111" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/chooseadventure/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="257">
+              <caret line="23" column="27" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="27" />
+              <folding>
+                <element signature="e#14#44#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/urlshortener/handler.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="57" column="4" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="4" />
+            <state relative-caret-position="235">
+              <caret line="59" column="5" lean-forward="true" selection-start-line="56" selection-start-column="4" selection-end-line="59" selection-end-column="5" />
               <folding>
-                <element signature="e#18#40#0" expanded="true" />
+                <element signature="e#14#80#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -57,6 +82,8 @@
         <option value="$PROJECT_DIR$/quiz/main.go" />
         <option value="$PROJECT_DIR$/urlshortener/main.go" />
         <option value="$PROJECT_DIR$/urlshortener/handler.go" />
+        <option value="$PROJECT_DIR$/chooseadventure/gopher.json" />
+        <option value="$PROJECT_DIR$/chooseadventure/main.go" />
       </list>
     </option>
   </component>
@@ -79,6 +106,11 @@
             <path>
               <item name="gophercises" type="b2602c69:ProjectViewProjectNode" />
               <item name="gophercises" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="gophercises" type="b2602c69:ProjectViewProjectNode" />
+              <item name="gophercises" type="462c0819:PsiDirectoryNode" />
+              <item name="chooseadventure" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="gophercises" type="b2602c69:ProjectViewProjectNode" />
@@ -214,12 +246,12 @@
       <option name="presentableId" value="Default" />
       <updated>1557846119619</updated>
       <workItem from="1557846120958" duration="9000" />
-      <workItem from="1557846176282" duration="4835000" />
+      <workItem from="1557846176282" duration="7014000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4844000" />
+    <option name="totallyTimeSpent" value="7023000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="970" extended-state="0" />
@@ -261,13 +293,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/quiz/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-67">
-          <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/Cellar/go/1.12.5/libexec/src/builtin/builtin.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="412">
@@ -277,8 +302,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/urlshortener/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="27" column="18" selection-start-line="27" selection-start-column="18" selection-end-line="27" selection-end-column="18" />
+        <state relative-caret-position="290">
+          <caret line="33" column="18" selection-start-line="33" selection-start-column="18" selection-end-line="33" selection-end-column="18" />
           <folding>
             <element signature="e#14#79#0" expanded="true" />
           </folding>
@@ -287,10 +312,41 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/urlshortener/handler.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="57" column="4" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="4" />
+        <state relative-caret-position="235">
+          <caret line="59" column="5" lean-forward="true" selection-start-line="56" selection-start-column="4" selection-end-line="59" selection-end-column="5" />
           <folding>
-            <element signature="e#18#40#0" expanded="true" />
+            <element signature="e#14#80#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/go/1.12.5/libexec/src/fmt/print.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1890">
+          <caret line="206" column="5" selection-start-line="206" selection-start-column="5" selection-end-line="206" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chooseadventure/gopher.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1887">
+          <caret line="111" column="1" selection-start-line="111" selection-start-column="1" selection-end-line="111" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/quiz/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="46" column="33" lean-forward="true" selection-start-line="45" selection-start-column="8" selection-end-line="46" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chooseadventure/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="257">
+          <caret line="23" column="27" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="27" />
+          <folding>
+            <element signature="e#14#44#0" expanded="true" />
           </folding>
         </state>
       </provider>
