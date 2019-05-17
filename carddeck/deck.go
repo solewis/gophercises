@@ -25,7 +25,7 @@ func (c Suit) String() string {
 type Rank int
 
 const (
-	Ace Rank = iota
+	Ace Rank = iota + 1
 	Two
 	Three
 	Four
@@ -44,7 +44,7 @@ var ranks = [...]Rank{Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten,
 
 func (r Rank) String() string {
 	names := []string{"Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"}
-	return names[r]
+	return names[r - 1]
 }
 
 type Card struct {
@@ -72,7 +72,7 @@ func New(deckOptions ...DeckOption) []Card {
 	return deck
 }
 
-func Expand(n int) DeckOption {
+func DeckCount(n int) DeckOption {
 	return func(cards []Card) []Card {
 		var expanded []Card
 		for i := 0; i < n; i++ {
