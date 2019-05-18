@@ -6,18 +6,33 @@ package main
 //rebuild deck after 75% through
 import (
 	"fmt"
+	"gophercises/blackjack/util"
 	"gophercises/carddeck"
 	"math"
 	"strings"
 )
 
+type AI interface {
+	Bet() util.USD
+	Play(hand []deck.Card, dealerShowing deck.Card) Move
+}
+
+type Move func(*GameState)
+
 const (
-	minBet                     USD     = 200
-	maxBet                     USD     = 50000
-	naturalBlackjackMultiplier float64 = 1.5
-	numDecks                   int     = 4
-	playerStartingUSD          USD     = 10000
+	minBet                     util.USD = 200
+	maxBet                     util.USD = 50000
+	naturalBlackjackMultiplier float64  = 1.5
+	numDecks                   int      = 4
+	playerStartingUSD          util.USD = 10000
 )
+
+type GameState struct {
+	deck BlackjackDeck
+	player Player
+	playerHand Hand
+	dealerHand Hand
+}
 
 type BlackjackDeck struct {
 	Cards []deck.Card
@@ -29,31 +44,8 @@ func (d *BlackjackDeck) Deal() deck.Card {
 	return card
 }
 
-type USD int64
-
-func (m USD) String() string {
-	x := float64(m)
-	x /= 100
-	return fmt.Sprintf("$%.2f", x)
-}
-
-func (m USD) Float64() float64 {
-	x := float64(m)
-	x = x / 100
-	return x
-}
-
-func (m USD) Multiply(f float64) USD {
-	x := (float64(m) * f) + 0.5
-	return USD(x)
-}
-
-func ToUSD(f float64) USD {
-	return USD((f * 100) + 0.5)
-}
-
 type Player struct {
-	USD        USD
+	USD        util.USD
 	TotalGames int
 }
 
@@ -115,45 +107,60 @@ func main() {
 	//fmt.Println("9. Early and late surrender allowed")
 	//fmt.Println("10. Continuous shuffle?")
 
-	player := Player{USD: playerStartingUSD}
-	blackjackDeck := BlackjackDeck{deck.New(deck.DeckCount(numDecks), deck.Shuffle)}
+	var gs = GameState{}
+	shuffle(&gs)
+	addPlayer(&gs)
 
 	var playAgain string
 	for playAgain != "n" {
-		playRound(&blackjackDeck, &player)
+		playRound(&gs)
 
-		if player.USD < minBet {
-			fmt.Printf("You have played %d games. You have %s. You do not have enough money to continue\n", player.TotalGames, player.USD.String())
+		if gs.player.USD < minBet {
+			fmt.Printf("You have played %d games. You have %s. You do not have enough money to continue\n", gs.player.TotalGames, gs.player.USD.String())
 			playAgain = "n"
 		} else {
-			fmt.Printf("You have played %d game(s). You have %s. Play again? (yn)\n", player.TotalGames, player.USD.String())
+			fmt.Printf("You have played %d game(s). You have %s. Play again? (yn)\n", gs.player.TotalGames, gs.player.USD.String())
 			fmt.Scanln(&playAgain)
 		}
 	}
 }
 
-func playRound(blackjackDeck *BlackjackDeck, player *Player) {
-	bet := retrieveBet(player)
+func shuffle(gs *GameState) {
+	gs.deck = BlackjackDeck{deck.New(deck.DeckCount(numDecks), deck.Shuffle)}
+}
 
-	var dealerHand, playerHand Hand
-	dealerHand = []deck.Card{blackjackDeck.Deal(), blackjackDeck.Deal()}
-	playerHand = []deck.Card{blackjackDeck.Deal(), blackjackDeck.Deal()}
+func addPlayer(gs *GameState) {
+	gs.player = Player{USD: playerStartingUSD}
+}
 
-	if dealerHand.IsNaturalBlackjack() || playerHand.IsNaturalBlackjack() {
-		handleResults(playerHand, dealerHand, player, bet)
+func playRound(gs *GameState) {
+	bet := retrieveBet(gs.player)
+	deal(gs)
+
+	if gs.dealerHand.IsNaturalBlackjack() || gs.playerHand.IsNaturalBlackjack() {
+		handleResults(gs.playerHand, gs.dealerHand, &gs.player, bet)
 		return
 	}
 
-	fmt.Printf("Dealer showing: %s\n", dealerHand.FirstCardString())
-	fmt.Printf("Your hand: %s\n", playerHand.String())
+	fmt.Printf("Dealer showing: %s\n", gs.dealerHand.FirstCardString())
+	fmt.Printf("Your hand: %s\n", gs.playerHand.String())
 
-	playerHand, bet = runPlayer(playerHand, blackjackDeck, bet, player)
-	dealerHand = runDealer(dealerHand, blackjackDeck)
+	bet = runPlayer(gs, bet)
+	gs.dealerHand = runDealer(gs.dealerHand, &gs.deck)
 
-	handleResults(playerHand, dealerHand, player, bet)
+	handleResults(gs.playerHand, gs.dealerHand, &gs.player, bet)
 }
 
-func handleResults(playerHand Hand, dealerHand Hand, player *Player, bet USD) {
+func deal(gs *GameState) {
+	gs.playerHand = make(Hand, 0, 21)
+	gs.dealerHand = make(Hand, 0, 21)
+	gs.playerHand = append(gs.playerHand, gs.deck.Deal())
+	gs.dealerHand = append(gs.dealerHand, gs.deck.Deal())
+	gs.playerHand = append(gs.playerHand, gs.deck.Deal())
+	gs.dealerHand = append(gs.dealerHand, gs.deck.Deal())
+}
+
+func handleResults(playerHand Hand, dealerHand Hand, player *Player, bet util.USD) {
 	dealerScore, playerScore := dealerHand.Score().Value, playerHand.Score().Value
 	fmt.Println("Final hands:")
 	fmt.Printf("Dealer: %s. Score: %d\n", dealerHand.String(), dealerScore)
@@ -187,49 +194,54 @@ func handleResults(playerHand Hand, dealerHand Hand, player *Player, bet USD) {
 	player.TotalGames++
 }
 
-func retrieveBet(player *Player) USD {
+func retrieveBet(player Player) util.USD {
 	fmt.Printf("You have %s.\n", player.USD.String())
 	var betInput float64
-	maxBet := ToUSD(math.Min(player.USD.Float64(), maxBet.Float64()))
+	maxBet := util.ToUSD(math.Min(player.USD.Float64(), maxBet.Float64()))
 	fmt.Printf("How much would you like to bet? %s (min) %s (max)\n", minBet.String(), maxBet.String())
-	for betInput < minBet.Float64() || betInput > maxBet.Float64() {
-		_, e := fmt.Scanln(&betInput)
-		if e != nil {
-			fmt.Println("Invalid bet... Try again")
+	for {
+		_, e := fmt.Scanf("%f\n", &betInput)
+		switch {
+		case e != nil:
+			fmt.Println("Invalid bet... Must be a float with a max of 2 decimal places")
+		case betInput < minBet.Float64():
+			fmt.Println("Bet must be greater than", minBet.String())
+		case betInput > maxBet.Float64():
+			fmt.Println("Bet must be less than", maxBet.String())
+		default:
+			bet := util.ToUSD(betInput)
+			fmt.Printf("Your bet is %s\n", bet.String())
+			return bet
 		}
 	}
-	bet := ToUSD(betInput)
-	fmt.Printf("Your bet is %s\n", bet.String())
-	return bet
 }
 
-func runPlayer(playerHand Hand, blackjackDeck *BlackjackDeck, bet USD, player *Player) (Hand, USD) {
+func runPlayer(gs *GameState, bet util.USD) (updatedBet util.USD) {
 	var playerChoice int
 	for playerChoice != 2 {
 		fmt.Println("Would you like to:")
 		fmt.Println("1. Hit")
 		fmt.Println("2. Stand")
-		if len(playerHand) == 2 && player.USD >= bet.Multiply(2) {
+		if len(gs.playerHand) == 2 && gs.player.USD >= bet.Multiply(2) {
 			fmt.Println("3. Double down")
 		}
 		fmt.Scanln(&playerChoice)
 		switch playerChoice {
 		case 1:
-			playerHand = append(playerHand, blackjackDeck.Deal())
-			fmt.Printf("Your hand: %s\n", playerHand.String())
+			gs.playerHand = append(gs.playerHand, gs.deck.Deal())
+			fmt.Printf("Your hand: %s\n", gs.playerHand.String())
 		case 3:
-			//TODO can only do if has enough money, and only on first run
-			playerHand = append(playerHand, blackjackDeck.Deal())
+			gs.playerHand = append(gs.playerHand, gs.deck.Deal())
 			bet = bet.Multiply(2)
 			fmt.Printf("Bet is now %s\n", bet.String())
-			fmt.Printf("Your hand: %s\n", playerHand.String())
-			return playerHand, bet
+			fmt.Printf("Your hand: %s\n", gs.playerHand.String())
+			return bet
 		}
-		if playerHand.Score().Value > 21 {
-			return playerHand, bet
+		if gs.playerHand.Score().Value > 21 {
+			return bet
 		}
 	}
-	return playerHand, bet
+	return bet
 }
 
 func runDealer(dealerHand Hand, blackjackDeck *BlackjackDeck) Hand {
