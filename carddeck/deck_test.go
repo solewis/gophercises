@@ -14,7 +14,7 @@ func TestNew(t *testing.T) {
 }
 
 func TestDeckCount(t *testing.T) {
-	testDeck := New(DeckCount(3))
+	testDeck := New(Count(3))
 
 	if len(testDeck) != 13*4*3 {
 		t.Errorf("Expected %d cards, received %d cards.", 13*4*3, len(testDeck))
@@ -31,7 +31,7 @@ func TestShuffle(t *testing.T) {
 }
 
 func TestShuffleWithMultipleDecks(t *testing.T) {
-	testDeck := New(DeckCount(2), Shuffle)
+	testDeck := New(Count(2), Shuffle)
 
 	if testDeck[0] == testDeck[52] && testDeck[1] == testDeck[53] {
 		t.Error("Expected shuffling to happen on expanded deck, instead it happened on original deck then was duplicated to expand")

@@ -56,9 +56,9 @@ func (c Card) String() string {
 	return fmt.Sprintf("%s of %ss", c.Rank.String(), c.Suit.String())
 }
 
-type DeckOption func(cards []Card) []Card
+type Option func(cards []Card) []Card
 
-func New(deckOptions ...DeckOption) []Card {
+func New(deckOptions ...Option) []Card {
 	var deck []Card
 	for _, suit := range suits {
 		for _, rank := range ranks {
@@ -72,7 +72,7 @@ func New(deckOptions ...DeckOption) []Card {
 	return deck
 }
 
-func DeckCount(n int) DeckOption {
+func Count(n int) Option {
 	return func(cards []Card) []Card {
 		var expanded []Card
 		for i := 0; i < n; i++ {
