@@ -13,7 +13,11 @@ func Human() blackjack.AI {
 
 type human struct{}
 
-func (h human) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []blackjack.Move) blackjack.Move {
+func (_ human) Name() string {
+	return "Human AI (You play)"
+}
+
+func (_ human) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []blackjack.Move) blackjack.Move {
 	fmt.Println("Dealer:", dealerShowing.String())
 	handScore, soft := blackjack.Score(hand)
 	softString := ""
@@ -40,7 +44,7 @@ func (h human) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []bl
 	}
 }
 
-func (h human) Bet(minBet money.USD, maxBet money.USD) money.USD {
+func (_ human) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	var betInput float64
 	fmt.Printf("How much would you like to bet? %s (min) %s (max)\n", minBet.String(), maxBet.String())
 	for {
@@ -60,7 +64,7 @@ func (h human) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	}
 }
 
-func (h human) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {
+func (_ human) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {
 	fmt.Println("---Final hands---")
 	dealerScore, _ := blackjack.Score(dealer)
 	fmt.Printf("Dealer: %s (%d)\n", blackjack.HandString(dealer), dealerScore)

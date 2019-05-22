@@ -10,7 +10,7 @@ import (
 func TestPlayer_Hit(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Two, Suit: deck.Club}, {Rank: deck.Two, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Hit}
+	ai := testAI{returnedMove: Hit}
 	testState := setupGame(playerHand, dealerHand, &ai)
 	nextCard := testState.deck.cards[0]
 
@@ -22,7 +22,7 @@ func TestPlayer_Hit(t *testing.T) {
 func TestPlayer_HitAndBust(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Hit}
+	ai := testAI{returnedMove: Hit}
 	testState := setupGame(playerHand, dealerHand, &ai)
 	nextCard := testState.deck.cards[0]
 
@@ -34,7 +34,7 @@ func TestPlayer_HitAndBust(t *testing.T) {
 func TestPlayer_Split(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Eight, Suit: deck.Club}, {Rank: deck.Eight, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Split}
+	ai := testAI{returnedMove: Split}
 	testState := setupGame(playerHand, dealerHand, &ai)
 	nextCards := testState.deck.cards[0:2]
 
@@ -58,7 +58,7 @@ func TestPlayer_Split(t *testing.T) {
 func TestPlayer_CannotSplitIfHandNotTwoCards(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Five, Suit: deck.Club}, {Rank:deck.Five, Suit: deck.Heart}, {Rank: deck.Six, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Split}
+	ai := testAI{returnedMove: Split}
 	testState := setupGame(playerHand, dealerHand, &ai)
 
 	defer func() {
@@ -76,7 +76,7 @@ func TestPlayer_CannotSplitIfHandNotTwoCards(t *testing.T) {
 func TestPlayer_CannotSplitIfCardsNotEqualRank(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Five, Suit: deck.Club}, {Rank: deck.Six, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Split}
+	ai := testAI{returnedMove: Split}
 	testState := setupGame(playerHand, dealerHand, &ai)
 
 	defer func() {
@@ -94,7 +94,7 @@ func TestPlayer_CannotSplitIfCardsNotEqualRank(t *testing.T) {
 func TestPlayer_Double(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Club}, {Rank: deck.Two, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Double}
+	ai := testAI{returnedMove: Double}
 	testState := setupGame(playerHand, dealerHand, &ai)
 	nextCard := testState.deck.cards[0]
 
@@ -107,7 +107,7 @@ func TestPlayer_Double(t *testing.T) {
 func TestPlayer_CannotDoubleIfHandNotTwoCards(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Five, Suit: deck.Club}, {Rank:deck.Five, Suit: deck.Heart}, {Rank: deck.Six, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Double}
+	ai := testAI{returnedMove: Double}
 	testState := setupGame(playerHand, dealerHand, &ai)
 
 	defer func() {
@@ -125,7 +125,7 @@ func TestPlayer_CannotDoubleIfHandNotTwoCards(t *testing.T) {
 func TestPlayer_Stand(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Stand}
+	ai := testAI{returnedMove: Stand}
 	testState := setupGame(playerHand, dealerHand, &ai)
 
 	runPlayerTurn(&testState)
@@ -135,7 +135,7 @@ func TestPlayer_Stand(t *testing.T) {
 func TestPlayer_Surrender(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Club}, {Rank: deck.Six, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Surrender}
+	ai := testAI{returnedMove: Surrender}
 	testState := setupGame(playerHand, dealerHand, &ai)
 
 	runPlayerTurn(&testState)
@@ -148,7 +148,7 @@ func TestPlayer_Surrender(t *testing.T) {
 func TestPlayer_CannotSurrenderIfNotTwoCards(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Five, Suit: deck.Club}, {Rank:deck.Five, Suit: deck.Heart}, {Rank: deck.Six, Suit: deck.Diamond}}
-	ai := TestAI{returnedMove: Surrender}
+	ai := testAI{returnedMove: Surrender}
 	testState := setupGame(playerHand, dealerHand, &ai)
 
 	defer func() {
@@ -166,7 +166,7 @@ func TestPlayer_CannotSurrenderIfNotTwoCards(t *testing.T) {
 func TestPlayer_AICannotModifyHands(t *testing.T) {
 	dealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand := []deck.Card{{Rank: deck.Two, Suit: deck.Club}, {Rank:deck.Two, Suit: deck.Heart}}
-	ai := CheatingAI{}
+	ai := cheatingAI{}
 	testState := setupGame(playerHand, dealerHand, &ai)
 	nextCard := testState.deck.cards[0]
 
@@ -201,7 +201,7 @@ func setupGame(playerHand, dealerHand []deck.Card, ai AI) state {
 
 func verifySingleHand(
 	t *testing.T, testState state, expectedEndingHandIdx int,
-	expectedEndingBet money.USD, ai TestAI,
+	expectedEndingBet money.USD, ai testAI,
 	startingPlayerHand, startingDealerHand, expectedEndingPlayerHand []deck.Card) {
 
 	if !reflect.DeepEqual(testState.player.hands[0].cards, expectedEndingPlayerHand) {

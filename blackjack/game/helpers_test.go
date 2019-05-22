@@ -5,7 +5,7 @@ import (
 	deck "gophercises/carddeck"
 )
 
-type TestAI struct {
+type testAI struct {
 	returnedMove              Move
 	sentAllowedMoves          []Move
 	sentPlayHand              []deck.Card
@@ -15,34 +15,42 @@ type TestAI struct {
 	sentWinnings, sentBalance money.USD
 }
 
-func (ai *TestAI) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []Move) Move {
+func (_ *testAI) Name() string {
+	return "Test AI"
+}
+
+func (ai *testAI) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []Move) Move {
 	ai.sentPlayHand = hand
 	ai.sentDealerShowing = dealerShowing
 	ai.sentAllowedMoves = allowedMoves
 	return ai.returnedMove
 }
 
-func (ai *TestAI) Bet(minBet money.USD, maxBet money.USD) money.USD {
+func (_ *testAI) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	return 0
 }
 
-func (ai *TestAI) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {
+func (ai *testAI) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {
 	ai.sentResultHands = hand
 	ai.sentDealerHand = dealer
 	ai.sentWinnings = winnings
 	ai.sentBalance = balance
 }
 
-type CheatingAI struct {}
+type cheatingAI struct {}
 
-func (ai CheatingAI) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []Move) Move {
+func (h cheatingAI) Name() string {
+	return "Cheating AI"
+}
+
+func (_ cheatingAI) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []Move) Move {
 	hand[0] = deck.Card{Rank: deck.Ace, Suit: deck.Heart}
 	hand[1] = deck.Card{Rank: deck.Ten, Suit: deck.Diamond}
 	return Hit
 }
 
-func (ai CheatingAI) Bet(minBet money.USD, maxBet money.USD) money.USD {
+func (_ cheatingAI) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	return 0
 }
 
-func (ai CheatingAI) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {}
+func (_ cheatingAI) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {}

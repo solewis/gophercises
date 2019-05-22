@@ -13,6 +13,7 @@ import (
 // tell ai what moves are allowed
 
 type AI interface {
+	Name() string
 	Bet(minBet money.USD, maxBet money.USD) money.USD
 	Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []Move) Move
 	Results(hands [][]deck.Card, dealer []deck.Card, winnings, balance money.USD)
@@ -32,7 +33,7 @@ func (m Move) String() string {
 	return []string{"Hit", "Stand", "Double", "Split", "Surrender"}[m]
 }
 
-func Play(opts Options) {
+func Play(opts Options) money.USD {
 	var s = state{}
 	shuffle(&s, opts)
 	s.player = player{ai: opts.AI, balance: 0}
@@ -59,6 +60,7 @@ func Play(opts Options) {
 
 		handleResults(&s, opts)
 	}
+	return s.player.balance
 }
 
 func Score(cards []deck.Card) (value int, soft bool) {

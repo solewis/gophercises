@@ -1,7 +1,6 @@
 package main
 
 //TODO
-// basic AI
 // Smart AI
 // Card counting AI
 // allow user to pick rules
@@ -19,7 +18,7 @@ const (
 	maxBet                     money.USD = 50000
 	naturalBlackjackMultiplier float64   = 1.5
 	numDecks                   int       = 4
-	numRounds                  int       = 10
+	numRounds                  int       = 10000000
 	percentDeckUsage           float64   = .75
 )
 
@@ -37,13 +36,16 @@ func main() {
 	//fmt.Println("9. Early and late surrender allowed")
 	//fmt.Println("10. Continuous shuffle?")
 
-	blackjack.Play(blackjack.Options{
+	finalBalance := blackjack.Play(blackjack.Options{
 		MinBet:                     minBet,
 		MaxBet:                     maxBet,
 		NaturalBlackjackMultiplier: naturalBlackjackMultiplier,
 		NumDecks:                   numDecks,
 		NumRounds:                  numRounds,
 		PercentDeckUsage:           percentDeckUsage,
-		AI:                         ai.Human(),
+		AI:                         ai.Basic(),
 	})
+
+	fmt.Println("------FINAL BALANCE------")
+	fmt.Println(finalBalance.String())
 }

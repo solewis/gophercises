@@ -14,7 +14,7 @@ var testOptions = Options{
 func TestHandleResults_PlayerHandSurrendered(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Two, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand1 := []deck.Card{{Rank: deck.Ace, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGameSurrendered(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, -100, 900, testState)
@@ -23,7 +23,7 @@ func TestHandleResults_PlayerHandSurrendered(t *testing.T) {
 func TestHandleResults_BothNaturalBlackjack(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Ace, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand1 := []deck.Card{{Rank: deck.Ace, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGame(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, 0, 1000, testState)
@@ -32,7 +32,7 @@ func TestHandleResults_BothNaturalBlackjack(t *testing.T) {
 func TestHandleResults_PlayerNaturalBlackjackOnly(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Eight, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand1 := []deck.Card{{Rank: deck.Ace, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGame(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, 300, 1300, testState)
@@ -41,7 +41,7 @@ func TestHandleResults_PlayerNaturalBlackjackOnly(t *testing.T) {
 func TestHandleResults_DealerNaturalBlackjackOnly(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Ace, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand1 := []deck.Card{{Rank: deck.Eight, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGame(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, -200, 800, testState)
@@ -50,7 +50,7 @@ func TestHandleResults_DealerNaturalBlackjackOnly(t *testing.T) {
 func TestHandleResults_PlayerBust(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Heart}}
 	playerHand1 := []deck.Card{{Rank: deck.Eight, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}, {Rank: deck.Five, Suit: deck.Club}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGame(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, -200, 800, testState)
@@ -59,7 +59,7 @@ func TestHandleResults_PlayerBust(t *testing.T) {
 func TestHandleResults_DealerBust(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Heart}}
 	playerHand1 := []deck.Card{{Rank: deck.Three, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGame(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, 200, 1200, testState)
@@ -68,7 +68,7 @@ func TestHandleResults_DealerBust(t *testing.T) {
 func TestHandleResults_PlayerLessThanDealer(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Ten, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand1 := []deck.Card{{Rank: deck.Nine, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGame(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, -200, 800, testState)
@@ -77,7 +77,7 @@ func TestHandleResults_PlayerLessThanDealer(t *testing.T) {
 func TestHandleResults_PlayerMoreThanDealer(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand1 := []deck.Card{{Rank: deck.Ten, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGame(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, 200, 1200, testState)
@@ -86,7 +86,7 @@ func TestHandleResults_PlayerMoreThanDealer(t *testing.T) {
 func TestHandleResults_PlayerEqualToDealer(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Nine, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand1 := []deck.Card{{Rank: deck.Nine, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
-	ai := TestAI{}
+	ai := testAI{}
 	testState := setupSingleDeckGame(playerHand1, testDealerHand, &ai)
 	handleResults(&testState, testOptions)
 	verify(t, ai, 0, 1000, testState)
@@ -96,7 +96,7 @@ func TestHandleResults_MultiplePlayerHands(t *testing.T) {
 	testDealerHand := []deck.Card{{Rank: deck.Seven, Suit: deck.Spade}, {Rank: deck.Ten, Suit: deck.Club}}
 	playerHand1 := []deck.Card{{Rank: deck.Eight, Suit: deck.Club}, {Rank: deck.Ten, Suit: deck.Diamond}}
 	playerHand2 := []deck.Card{{Rank: deck.Six, Suit: deck.Heart}, {Rank: deck.Ten, Suit: deck.Heart}}
-	ai := &TestAI{}
+	ai := &testAI{}
 	testPlayer := player{
 		hands: []hand{
 			{
@@ -145,7 +145,7 @@ func setupSingleDeckGame(playerHand, dealerHand []deck.Card, ai AI) state {
 
 func verify(
 	t *testing.T,
-	ai TestAI,
+	ai testAI,
 	expectedWinnings, expectedBalance money.USD,
 	testState state) {
 
