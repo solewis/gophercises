@@ -36,20 +36,24 @@ func main() {
 	//fmt.Println("10. Continuous shuffle?")
 
 	rounds := determineRounds()
-	chosenAI := determineAI()
+	ais := determineAIs()
 
-	finalBalance := blackjack.Play(blackjack.Options{
+	fmt.Println("------STARTING GAME------")
+
+	balances := blackjack.Play(blackjack.Options{
 		MinBet:                     minBet,
 		MaxBet:                     maxBet,
 		NaturalBlackjackMultiplier: naturalBlackjackMultiplier,
 		NumDecks:                   numDecks,
 		NumRounds:                  rounds,
 		PercentDeckUsage:           percentDeckUsage,
-		AI:                         chosenAI,
+		AIs:                        ais,
 	})
 
-	fmt.Println("------FINAL BALANCE------")
-	fmt.Println(finalBalance.String())
+	fmt.Println("------FINAL BALANCES------")
+	for k, v := range balances {
+		fmt.Printf("%s balance: %s\n", k, v.String())
+	}
 }
 
 func determineRounds() int {
@@ -66,20 +70,36 @@ func determineRounds() int {
 	}
 }
 
-func determineAI() blackjack.AI {
-	fmt.Println("Which AI would you like to use?")
-	ais := []blackjack.AI{ai.Human(), ai.Basic()}
-	for i, ai := range ais {
-		fmt.Printf("%d: %s\n", i+1, ai.Name())
-	}
-	var playerChoice int
+func determineAIs() map[string]blackjack.AI {
+	fmt.Print("How many players? (1-8) ")
+	var players int
 	for {
-		fmt.Scanln(&playerChoice)
-		switch {
-		case playerChoice > 0 && playerChoice <= len(ais):
-			return ais[playerChoice-1]
-		default:
-			fmt.Println("Invalid choice.")
+		fmt.Scanln(&players)
+		if players > 0 && players <= 8 {
+			break
+		} else {
+			fmt.Println("Invalid choice. Choose a number from 1 to 8")
 		}
 	}
+
+	ais := []blackjack.AI{ai.Human(), ai.Basic()}
+	selectedAIs := make(map[string]blackjack.AI)
+	for i := 0; i < players; i++ {
+		fmt.Println("Which AI would you like to use for player", i + 1)
+		for aiIdx, a := range ais {
+			fmt.Printf("%d: %s\n", aiIdx+1, a.Name())
+		}
+		var aiChoice int
+		for {
+			fmt.Scanln(&aiChoice)
+			if aiChoice > 0 && aiChoice <= len(ais) {
+				a := ais[aiChoice-1]
+				selectedAIs[a.Name()] = a
+				break
+			} else {
+				fmt.Println("Invalid choice.")
+			}
+		}
+	}
+	return selectedAIs
 }
