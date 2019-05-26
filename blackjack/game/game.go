@@ -2,15 +2,11 @@ package blackjack
 
 import (
 	"errors"
-	"fmt"
 	"gophercises/blackjack/money"
 	"gophercises/carddeck"
 	"math"
 	"strings"
 )
-
-//TODO
-// surrender only allowed on first returnedMove, not after split
 
 type AI interface {
 	Name() string
@@ -54,9 +50,11 @@ func Play(opts Options) map[string]money.USD {
 
 		for playerIdx := range s.players {
 			for handIdx := 0; handIdx < len(s.players[playerIdx].hands); handIdx++ {
+				firstPlay := true
 				for {
 					//TODO can this be recursive and testable?
-					finished := runHand(&s.players[playerIdx], &s.players[playerIdx].hands[handIdx], s.dealerHand[0], s.deck)
+					finished := runPlayerHand(&s.players[playerIdx], &s.players[playerIdx].hands[handIdx], s.dealerHand[0], s.deck, firstPlay)
+					firstPlay = false
 					if finished {
 						break
 					}
@@ -70,7 +68,7 @@ func Play(opts Options) map[string]money.USD {
 
 		handleResults(&s, opts)
 	}
-	fmt.Printf("%v", s.players)
+
 	var balances = make(map[string]money.USD)
 	for _, p := range s.players {
 		balances[p.name] = p.balance
@@ -115,6 +113,9 @@ type Options struct {
 	NumDecks                   int
 	NumRounds                  int
 	PercentDeckUsage           float64
+	Double                     bool
+	Surrender                  bool
+	DoubleAfterSplit           bool
 	AIs                        map[string]AI
 }
 
@@ -122,7 +123,6 @@ type state struct {
 	deck       blackjackDeck
 	players    []player
 	dealerHand []deck.Card
-	handIdx    int
 }
 
 type blackjackDeck struct {
@@ -154,6 +154,7 @@ type hand struct {
 	cards       []deck.Card
 	bet         money.USD
 	surrendered bool
+	split       bool
 }
 
 func (h hand) string() string {
@@ -194,14 +195,14 @@ func deal(s *state) {
 	}
 
 	for card := 0; card < 2; card++ {
-		for pIdx:=range s.players {
+		for pIdx := range s.players {
 			playerHands[pIdx] = append(playerHands[pIdx], s.deck.draw())
 		}
 		s.dealerHand = append(s.dealerHand, s.deck.draw())
 	}
 
 	for pIdx := range s.players {
-		p:= &s.players[pIdx]
+		p := &s.players[pIdx]
 		p.hands = []hand{
 			{
 				cards: playerHands[pIdx],
@@ -209,18 +210,20 @@ func deal(s *state) {
 			},
 		}
 	}
-
-	s.handIdx = 0
 }
 
-func runHand(p *player, h *hand, ds deck.Card, d blackjackDeck) (finished bool) {
-	//currentPlayer := s.currentPlayer()
-	//playerHand := &s.player.hands[s.handIdx].cards
+func runPlayerHand(
+	p *player,
+	h *hand,
+	ds deck.Card,
+	d blackjackDeck,
+	firstPlay bool) (finished bool) {
+
 	cards := &(*h).cards
 	playerHandCopy := make([]deck.Card, len(*cards))
 	copy(playerHandCopy, *cards)
 
-	allowedMoves := allowedMoves(*cards)
+	allowedMoves := allowedMoves(*h, firstPlay)
 	move := p.ai.Play(playerHandCopy, ds, allowedMoves)
 
 	switch move {
@@ -246,6 +249,7 @@ func runHand(p *player, h *hand, ds deck.Card, d blackjackDeck) (finished bool) 
 		p.hands = append(p.hands, hand{
 			cards: []deck.Card{splitCard, d.draw()},
 			bet:   p.initialBet,
+			split: true,
 		})
 		return false
 	case Surrender:
@@ -259,49 +263,6 @@ func runHand(p *player, h *hand, ds deck.Card, d blackjackDeck) (finished bool) 
 	}
 }
 
-//func runPlayerTurn(s *state) {
-//	currentPlayer := s.currentPlayer()
-//	playerHand := &s.player.hands[s.handIdx].cards
-//	playerHandCopy := make([]deck.Card, len(*playerHand))
-//	copy(playerHandCopy, *playerHand)
-//
-//	allowedMoves := allowedMoves(*playerHand)
-//	move := s.player.ai.Play(playerHandCopy, s.dealerHand[0], allowedMoves)
-//
-//	switch move {
-//	case Hit:
-//		*playerHand = append(append(*playerHand, s.deck.draw()))
-//		if score, _ := Score(*playerHand); score > 21 {
-//			s.handIdx++
-//		}
-//	case Stand:
-//		s.handIdx++
-//	case Double:
-//		if !containsMove(allowedMoves, Double) {
-//			panic(errors.New("can only double on a hand with two cards"))
-//		}
-//		*playerHand = append(append(*playerHand, s.deck.draw()))
-//		s.player.hands[s.handIdx].bet *= 2
-//		s.handIdx++
-//	case Split:
-//		if !containsMove(allowedMoves, Split) {
-//			panic(errors.New("can only split on a hand with two identical cards"))
-//		}
-//		splitCard := (*playerHand)[1]
-//		*playerHand = []deck.Card{(*playerHand)[0], s.deck.draw()}
-//		s.player.hands = append(s.player.hands, hand{
-//			cards: []deck.Card{splitCard, s.deck.draw()},
-//			bet:   s.player.initialBet,
-//		})
-//	case Surrender:
-//		if !containsMove(allowedMoves, Surrender) {
-//			panic(errors.New("can only surrender when you have two cards"))
-//		}
-//		s.player.hands[s.handIdx].surrendered = true
-//		s.handIdx++
-//	}
-//}
-
 func containsMove(moves []Move, move Move) bool {
 	for _, m := range moves {
 		if m == move {
@@ -311,11 +272,14 @@ func containsMove(moves []Move, move Move) bool {
 	return false
 }
 
-func allowedMoves(playerHand []deck.Card) []Move {
+func allowedMoves(playerHand hand, firstPlay bool) []Move {
 	allowedMoves := []Move{Hit, Stand}
-	if len(playerHand) == 2 {
-		allowedMoves = append(allowedMoves, []Move{Double, Surrender}...)
-		if (playerHand)[0].Rank == (playerHand)[1].Rank {
+	if len(playerHand.cards) == 2 {
+		allowedMoves = append(allowedMoves, Double)
+		if firstPlay && !playerHand.split {
+			allowedMoves = append(allowedMoves, Surrender)
+		}
+		if playerHand.cards[0].Rank == playerHand.cards[1].Rank {
 			allowedMoves = append(allowedMoves, Split)
 		}
 	}

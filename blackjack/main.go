@@ -1,11 +1,10 @@
 package main
 
 //TODO
-// Smart AI
 // Card counting AI
 // allow user to pick rules
 // calculate house edge based on rules
-// multiple players
+// strategy morph to rules (H17 vs S17, etc)
 import (
 	"fmt"
 	"gophercises/blackjack/ai"
@@ -82,7 +81,7 @@ func determineAIs() map[string]blackjack.AI {
 		}
 	}
 
-	ais := []blackjack.AI{ai.Human(), ai.Basic()}
+	ais := []blackjack.AI{ai.Human(), ai.Practice(), ai.Basic(), ai.Smart()}
 	selectedAIs := make(map[string]blackjack.AI)
 	for i := 0; i < players; i++ {
 		fmt.Println("Which AI would you like to use for player", i + 1)

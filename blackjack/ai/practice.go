@@ -7,17 +7,17 @@ import (
 	"gophercises/carddeck"
 )
 
-func Human() blackjack.AI {
-	return human{}
+func Practice() blackjack.AI {
+	return practice{}
 }
 
-type human struct{}
+type practice struct{}
 
-func (_ human) Name() string {
-	return "Human AI"
+func (_ practice) Name() string {
+	return "Practice Human AI"
 }
 
-func (_ human) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []blackjack.Move) blackjack.Move {
+func (_ practice) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []blackjack.Move) blackjack.Move {
 	fmt.Println("Dealer:", dealerShowing.String())
 	handScore, soft := blackjack.Score(hand)
 	softString := ""
@@ -36,7 +36,16 @@ func (_ human) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []bl
 			fmt.Scanln(&playerChoice)
 			switch {
 			case playerChoice > 0 && playerChoice <= len(allowedMoves):
-				return allowedMoves[playerChoice-1]
+				move := allowedMoves[playerChoice-1]
+				pPair := len(hand) == 2 && hand[0].Rank == hand[1].Rank
+				dScore, _ := blackjack.Score([]deck.Card{dealerShowing})
+				correctMove := lookup[playerHand{handScore, soft, pPair}][dScore](allowedMoves)
+				if move == correctMove {
+					fmt.Println("Correct!")
+				} else {
+					fmt.Println("Incorrect... correct move was", correctMove.String())
+				}
+				return move
 			default:
 				fmt.Println("Invalid chooseF.")
 			}
@@ -44,7 +53,7 @@ func (_ human) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []bl
 	}
 }
 
-func (_ human) Bet(minBet money.USD, maxBet money.USD) money.USD {
+func (_ practice) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	var betInput float64
 	fmt.Printf("How much would you like to bet? %s (min) %s (max)\n", minBet.String(), maxBet.String())
 	for {
@@ -64,7 +73,7 @@ func (_ human) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	}
 }
 
-func (_ human) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {
+func (_ practice) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {
 	fmt.Println("---Final hands---")
 	dealerScore, _ := blackjack.Score(dealer)
 	fmt.Printf("Dealer: %s (%d)\n", blackjack.HandString(dealer), dealerScore)
