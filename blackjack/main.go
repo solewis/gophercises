@@ -29,10 +29,8 @@ func main() {
 	fmt.Println("4. Dealer does not automatically win on blackjack")
 	fmt.Printf("5. Payout on natural blackjack %.2f\n", naturalBlackjackMultiplier)
 	fmt.Println("6. No double down restrictions (can double down on any hand")
-	fmt.Printf("7. %d decks\n", numDecks)
-	//fmt.Println("8. No split restrictions")
-	//fmt.Println("9. Early and late surrender allowed")
-	//fmt.Println("10. Continuous shuffle?")
+	fmt.Println("7. Late surrender allowed")
+	fmt.Printf("8. %d decks\n", numDecks)
 
 	rounds := determineRounds()
 	ais := determineAIs()
