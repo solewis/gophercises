@@ -30,12 +30,14 @@ func (_ *testAI) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	return 0
 }
 
-func (ai *testAI) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {
-	ai.sentResultHands = hand
+func (ai *testAI) HandResults(hand, dealer []deck.Card, winnings, balance money.USD) {
+	//ai.sentResultHands = hand
 	ai.sentDealerHand = dealer
 	ai.sentWinnings = winnings
 	ai.sentBalance = balance
 }
+
+func (_ testAI) RoundRecap(allHands [][]deck.Card) {}
 
 type cheatingAI struct {}
 
@@ -53,4 +55,6 @@ func (_ cheatingAI) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	return 0
 }
 
-func (_ cheatingAI) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {}
+func (_ cheatingAI) HandResults(hand, dealer []deck.Card, winnings, balance money.USD) {}
+
+func (_ cheatingAI) RoundRecap(allHands [][]deck.Card) {}

@@ -33,19 +33,18 @@ func main() {
 	fmt.Printf("8. %d decks\n", numDecks)
 
 	rounds := determineRounds()
-	ais := determineAIs()
-
-	fmt.Println("------STARTING GAME------")
-
-	balances := blackjack.Play(blackjack.Options{
+	options := blackjack.Options{
 		MinBet:                     minBet,
 		MaxBet:                     maxBet,
 		NaturalBlackjackMultiplier: naturalBlackjackMultiplier,
 		NumDecks:                   numDecks,
 		NumRounds:                  rounds,
 		PercentDeckUsage:           percentDeckUsage,
-		AIs:                        ais,
-	})
+	}
+	ais := determineAIs(options)
+
+	fmt.Println("------STARTING GAME------")
+	balances := blackjack.Play(ais, options)
 
 	fmt.Println("------FINAL BALANCES------")
 	for k, v := range balances {
@@ -67,7 +66,7 @@ func determineRounds() int {
 	}
 }
 
-func determineAIs() map[string]blackjack.AI {
+func determineAIs(opts blackjack.Options) map[string]blackjack.AI {
 	fmt.Print("How many players? (1-8) ")
 	var players int
 	for {
@@ -79,10 +78,21 @@ func determineAIs() map[string]blackjack.AI {
 		}
 	}
 
-	ais := []blackjack.AI{ai.Human(), ai.Practice(), ai.Basic(), ai.Smart()}
+	var ais = []blackjack.AI{ai.Human(), ai.Practice(), ai.Basic(), ai.Smart(), ai.BasicHiLo(opts)}
 	selectedAIs := make(map[string]blackjack.AI)
 	for i := 0; i < players; i++ {
-		fmt.Println("Which AI would you like to use for player", i + 1)
+		fmt.Printf("What is player %d's name?\n", i+1)
+		var nameChoice string
+		for {
+			fmt.Scanln(&nameChoice)
+			if _, exists := selectedAIs[nameChoice]; !exists {
+				break
+			} else {
+				fmt.Println("Name is not unique, try again")
+			}
+		}
+
+		fmt.Println("Which AI would you like to use for player", i+1)
 		for aiIdx, a := range ais {
 			fmt.Printf("%d: %s\n", aiIdx+1, a.Name())
 		}
@@ -91,7 +101,7 @@ func determineAIs() map[string]blackjack.AI {
 			fmt.Scanln(&aiChoice)
 			if aiChoice > 0 && aiChoice <= len(ais) {
 				a := ais[aiChoice-1]
-				selectedAIs[a.Name()] = a
+				selectedAIs[fmt.Sprintf("%s - %s", nameChoice, a.Name())] = a
 				break
 			} else {
 				fmt.Println("Invalid choice.")

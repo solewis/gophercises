@@ -46,6 +46,16 @@ var (
 	allHit   = map[int]chooseF{2: hitF, 3: hitF, 4: hitF, 5: hitF, 6: hitF, 7: hitF, 8: hitF, 9: hitF, 10: hitF, 11: hitF}
 	allStand = map[int]chooseF{2: standF, 3: standF, 4: standF, 5: standF, 6: standF, 7: standF, 8: standF, 9: standF, 10: standF, 11: standF}
 )
+
+func containsMove(moves []blackjack.Move, move blackjack.Move) bool {
+	for _, m := range moves {
+		if m == move {
+			return true
+		}
+	}
+	return false
+}
+
 var lookup = map[playerHand]map[int]chooseF{
 	//hard hands
 	playerHand{4, false, false}:  allHit,

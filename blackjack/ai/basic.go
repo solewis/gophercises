@@ -39,8 +39,10 @@ func (_ basic) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []bl
 	return blackjack.Hit
 }
 
-func (_ basic) Bet(minBet money.USD, maxBet money.USD) money.USD {
+func (_ basic) Bet(minBet money.USD, maxBet money.USD, _ bool) money.USD {
 	return money.ToUSD(5)
 }
 
-func (_ basic) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {}
+func (_ basic) HandResults(hand, dealer []deck.Card, winnings, balance money.USD) {}
+
+func (_ basic) RoundRecap(allHands [][]deck.Card) {}

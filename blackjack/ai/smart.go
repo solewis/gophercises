@@ -23,17 +23,10 @@ func (_ smart) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []bl
 	return lookup[playerHand{pScore, soft, pPair}][dScore](allowedMoves)
 }
 
-func (_ smart) Bet(minBet money.USD, maxBet money.USD) money.USD {
+func (_ smart) Bet(minBet money.USD, maxBet money.USD, _ bool) money.USD {
 	return money.ToUSD(5)
 }
 
-func (_ smart) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {}
+func (_ smart) HandResults(hand, dealer []deck.Card, winnings, balance money.USD) {}
 
-func containsMove(moves []blackjack.Move, move blackjack.Move) bool {
-	for _, m := range moves {
-		if m == move {
-			return true
-		}
-	}
-	return false
-}
+func (_ smart) RoundRecap(allHands [][]deck.Card) {}

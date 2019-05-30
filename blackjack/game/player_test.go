@@ -14,7 +14,7 @@ func TestPlayer_Hit(t *testing.T) {
 	testState := buildSinglePlayerGame(playerHand, dealerHand, &ai)
 	nextCard := testState.deck.cards[0]
 
-	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	expectedHand := append(playerHand, nextCard)
 
 	expectHand(t, testState.players[0].hands[0].cards, expectedHand)
@@ -31,7 +31,7 @@ func TestPlayer_HitAndBust(t *testing.T) {
 	testState := buildSinglePlayerGame(playerHand, dealerHand, &ai)
 	nextCard := testState.deck.cards[0]
 
-	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	expectedHand := append(playerHand, nextCard)
 
 	expectHand(t, testState.players[0].hands[0].cards, expectedHand)
@@ -48,7 +48,7 @@ func TestPlayer_Split(t *testing.T) {
 	testState := buildSinglePlayerGame(playerHand, dealerHand, &ai)
 	nextCards := testState.deck.cards[0:2]
 
-	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	expectedHand1 := []deck.Card{playerHand[0], nextCards[0]}
 	expectedHand2 := []deck.Card{playerHand[1], nextCards[1]}
 
@@ -74,7 +74,7 @@ func TestPlayer_CannotSplitIfHandNotTwoCards(t *testing.T) {
 		}
 	}()
 
-	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	if containsMove(ai.sentAllowedMoves, Split) {
 		t.Error("Split was passed to AI as an allowed move when it should not have been")
 	}
@@ -92,7 +92,7 @@ func TestPlayer_CannotSplitIfCardsNotEqualRank(t *testing.T) {
 		}
 	}()
 
-	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	if containsMove(ai.sentAllowedMoves, Split) {
 		t.Error("Split was passed to AI as an allowed move when it should not have been")
 	}
@@ -105,7 +105,7 @@ func TestPlayer_Double(t *testing.T) {
 	testState := buildSinglePlayerGame(playerHand, dealerHand, &ai)
 	nextCard := testState.deck.cards[0]
 
-	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	expectedHand := append(playerHand, nextCard)
 	expectedBet := testState.players[0].initialBet.Multiply(2)
 
@@ -128,7 +128,7 @@ func TestPlayer_CannotDoubleIfHandNotTwoCards(t *testing.T) {
 		}
 	}()
 
-	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	if containsMove(ai.sentAllowedMoves, Double) {
 		t.Error("Double was passed to AI as an allowed move when it should not have been")
 	}
@@ -140,7 +140,7 @@ func TestPlayer_Stand(t *testing.T) {
 	ai := testAI{returnedMove: Stand}
 	testState := buildSinglePlayerGame(playerHand, dealerHand, &ai)
 
-	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 
 	expectHand(t, testState.players[0].hands[0].cards, playerHand)
 	expectBet(t, testState.players[0].hands[0].bet, 200)
@@ -155,7 +155,7 @@ func TestPlayer_Surrender(t *testing.T) {
 	ai := testAI{returnedMove: Surrender}
 	testState := buildSinglePlayerGame(playerHand, dealerHand, &ai)
 
-	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	finished := runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 
 	expectHand(t, testState.players[0].hands[0].cards, playerHand)
 	expectBet(t, testState.players[0].hands[0].bet, 200)
@@ -179,7 +179,7 @@ func TestPlayer_CannotSurrenderIfNotTwoCards(t *testing.T) {
 		}
 	}()
 
-	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	if containsMove(ai.sentAllowedMoves, Surrender) {
 		t.Error("Surrender was passed to AI as an allowed move when it should not have been")
 	}
@@ -198,7 +198,7 @@ func TestPlayer_CannotSurrenderAfterSplit(t *testing.T) {
 		}
 	}()
 
-	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	if containsMove(ai.sentAllowedMoves, Surrender) {
 		t.Error("Surrender was passed to AI as an allowed move when it should not have been")
 	}
@@ -211,7 +211,7 @@ func TestPlayer_AICannotModifyHands(t *testing.T) {
 	testState := buildSinglePlayerGame(playerHand, dealerHand, &ai)
 	nextCard := testState.deck.cards[0]
 
-	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], testState.deck, true)
+	runPlayerHand(&testState.players[0], &testState.players[0].hands[0], dealerHand[0], &testState.deck, true)
 	expectedHand := append([]deck.Card{{Rank: deck.Two, Suit: deck.Club}, {Rank: deck.Two, Suit: deck.Heart}}, nextCard)
 	currentPlayerHand := testState.players[0].hands[0].cards
 	if !reflect.DeepEqual(currentPlayerHand, expectedHand) {

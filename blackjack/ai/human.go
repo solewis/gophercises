@@ -44,7 +44,7 @@ func (_ human) Play(hand []deck.Card, dealerShowing deck.Card, allowedMoves []bl
 	}
 }
 
-func (_ human) Bet(minBet money.USD, maxBet money.USD) money.USD {
+func (_ human) Bet(minBet money.USD, maxBet money.USD, _ bool) money.USD {
 	var betInput float64
 	fmt.Printf("How much would you like to bet? %s (min) %s (max)\n", minBet.String(), maxBet.String())
 	for {
@@ -64,14 +64,13 @@ func (_ human) Bet(minBet money.USD, maxBet money.USD) money.USD {
 	}
 }
 
-func (_ human) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance money.USD) {
-	fmt.Println("---Final hands---")
+func (_ human) HandResults(hand, dealer []deck.Card, winnings, balance money.USD) {
+	fmt.Println("---Hand Results---")
 	dealerScore, _ := blackjack.Score(dealer)
 	fmt.Printf("Dealer: %s (%d)\n", blackjack.HandString(dealer), dealerScore)
-	for i, h := range hand {
-		handScore, _ := blackjack.Score(h)
-		fmt.Printf("You (%d): %s (%d)\n", i+1, blackjack.HandString(h), handScore)
-	}
+	handScore, _ := blackjack.Score(hand)
+	fmt.Printf("You: %s (%d)\n", blackjack.HandString(hand), handScore)
+
 	switch {
 	case winnings.Float64() == 0:
 		fmt.Println("No money gained or lost. Balance:", balance.String())
@@ -81,3 +80,5 @@ func (_ human) Results(hand [][]deck.Card, dealer []deck.Card, winnings, balance
 		fmt.Printf("You won %s. Balance: %s\n", winnings.String(), balance.String())
 	}
 }
+
+func (_ human) RoundRecap(allHands [][]deck.Card) {}
